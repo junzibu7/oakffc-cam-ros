@@ -38,36 +38,36 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(oakcam_ffc_4p_ros STATIC
-  src/ffc_4p_driver.cpp
+add_library(oakcam_ffc_ros STATIC
+  src/ffc_driver.cpp
 )
 
-# add_dependencies(oakcam_ffc_4p_ros ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+# add_dependencies(oakcam_ffc_ros ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-add_executable(${PROJECT_NAME}_node src/ffc_4p_node.cpp)
-add_dependencies(${PROJECT_NAME}_node oakcam_ffc_4p_ros  ${catkin_EXPORTED_TARGETS})
+add_executable(${PROJECT_NAME}_node src/ffc_node.cpp)
+add_dependencies(${PROJECT_NAME}_node oakcam_ffc_ros  ${catkin_EXPORTED_TARGETS})
 
-add_executable(multi_cam src/multi_cam.cpp)
-add_dependencies(multi_cam oakcam_ffc_4p_ros  ${catkin_EXPORTED_TARGETS})
+add_executable(multi_cam test/multi_cam.cpp)
+add_dependencies(multi_cam oakcam_ffc_ros  ${catkin_EXPORTED_TARGETS})
 
-target_link_libraries(oakcam_ffc_4p_ros
+target_link_libraries(oakcam_ffc_ros
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   depthai::opencv
 )
 
 target_link_libraries(${PROJECT_NAME}_node
-  oakcam_ffc_4p_ros
+  oakcam_ffc_ros
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   depthai::opencv
 )
 
 target_link_libraries(multi_cam
-  oakcam_ffc_4p_ros
+  oakcam_ffc_ros
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   depthai::opencv

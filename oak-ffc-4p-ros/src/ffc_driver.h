@@ -12,7 +12,7 @@
 
 namespace OAKCAM{
 
-class FFC4PDriver
+class FFCDriver
 {  
  public:
    struct CameraModuleConfig{
@@ -76,8 +76,8 @@ class FFC4PDriver
        {dai::CameraBoardSocket::CAM_D,dai::MonoCameraProperties::SensorResolution::THE_720_P, std::string("CAM_D"),false}
       };
    
-   FFC4PDriver(std::shared_ptr<ros::NodeHandle>& nh);
-   ~FFC4PDriver();
+   FFCDriver(std::shared_ptr<ros::NodeHandle>& nh);
+   ~FFCDriver();
    int32_t InitPipeline();
    int32_t SetAllCameraSychron();
    int32_t SetVideoOutputQueue();

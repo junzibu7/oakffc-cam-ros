@@ -11,13 +11,13 @@
 #include <unistd.h>
 #include <time.h>
 
-#include "ffc_4p_driver.h"
+#include "ffc_driver.h"
 #include <ros/ros.h>
 
 int main(int argc, char** argv){
 	ros::init(argc, argv, "oakcam_ffc_4p_ros");
     auto cam_node = std::make_shared<ros::NodeHandle>("oakcam_ffc_4p_ros") ;
-	OAKCAM::FFC4PDriver cam_driver(cam_node);
+	OAKCAM::FFCDriver cam_driver(cam_node);
 	int32_t ret = 0 ;
 	ret = cam_driver.InitPipeline();
 	if(ret != 0){

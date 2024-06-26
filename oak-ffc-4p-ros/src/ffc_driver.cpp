@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#include "ffc_4p_driver.h"
+#include "ffc_driver.h"
 
 #include <ros/ros.h>
 #include <std_msgs/Int32.h>
@@ -27,7 +27,7 @@
 #define FPS_BIAS 0
 
 namespace OAKCAM{
-FFC4PDriver::FFC4PDriver(std::shared_ptr<ros::NodeHandle>& nh){
+FFCDriver::FFCDriver(std::shared_ptr<ros::NodeHandle>& nh){
 	if(nh == nullptr){
 		ROS_ERROR("Init with a invalid Nodehandler");
 		return;
@@ -68,12 +68,12 @@ FFC4PDriver::FFC4PDriver(std::shared_ptr<ros::NodeHandle>& nh){
 	this->GetParameters(*nh);
 }
 
-FFC4PDriver::~FFC4PDriver(){
+FFCDriver::~FFCDriver(){
 	this->device_->close();
 }
 
 // TODO parameter did not get in
-void FFC4PDriver::GetParameters(ros::NodeHandle& nh){
+void FFCDriver::GetParameters(ros::NodeHandle& nh){
 	nh.getParam("color_show_img",this->module_config_color_.show_img);
 	nh.getParam("color_fps",this->module_config_color_.fps);
 	nh.getParam("color_resolution",this->module_config_color_.resolution);
@@ -140,7 +140,7 @@ void FFC4PDriver::GetParameters(ros::NodeHandle& nh){
 
 }
 
-int32_t FFC4PDriver::InitPipeline(){
+int32_t FFCDriver::InitPipeline(){
 	this->pipeline_ = std::make_shared<dai::Pipeline>();
 	if(this->pipeline_ == nullptr){
 		ROS_ERROR("pipline init failed\n");
@@ -231,7 +231,7 @@ int32_t FFC4PDriver::InitPipeline(){
 	return -2;
 }
 
-int32_t FFC4PDriver::SetAllCameraSychron(){
+int32_t FFCDriver::SetAllCameraSychron(){
 	if(this->device_is_detected_ == 0 || this->pipeline_ == nullptr){
 		ROS_ERROR("Device is not detected or pipeline is not initiated\n");
 		return -1;
@@ -242,7 +242,7 @@ int32_t FFC4PDriver::SetAllCameraSychron(){
 	return 0;
 }
 
-int32_t FFC4PDriver::SetVideoOutputQueue(){
+int32_t FFCDriver::SetVideoOutputQueue(){
 	for(int i = 0; i < this->ColorCameraList.size(); i++){
 		auto rgb_queue = this->device_->getOutputQueue(this->ColorCameraList[i].stream_name, 1, false);
 		if(rgb_queue == nullptr){
@@ -269,7 +269,7 @@ int32_t FFC4PDriver::SetVideoOutputQueue(){
 	return 0;
 }
 
-void FFC4PDriver::StartVideoStream(){
+void FFCDriver::StartVideoStream(){
 	for(auto& i : this->color_image_queue_){
 		std::stringstream topic;
 		if(this->module_config_color_.calibration_mode){
@@ -314,18 +314,18 @@ void FFC4PDriver::StartVideoStream(){
 
 	if(this->module_config_color_.ros_defined_freq){
 		printf("Use timer\n");
-		// this->thread_timer_  = this->ros_node_->createTimer(ros::Duration(1/this->module_config_color_.fps*2),&FFC4PDriver::RosGrabImgThread, this);
+		// this->thread_timer_  = this->ros_node_->createTimer(ros::Duration(1/this->module_config_color_.fps*2),&FFCDriver::RosGrabImgThread, this);
 		this->ros_rate_ptr_ = std::make_unique<ros::Rate>(this->module_config_color_.fps);
-		this->grab_thread_ = std::thread(&FFC4PDriver::RosGrabImgThread,this);
+		this->grab_thread_ = std::thread(&FFCDriver::RosGrabImgThread,this);
 	} else {
 		printf("Use std thread\n");
-		this->grab_thread_ = std::thread(&FFC4PDriver::StdGrabImgThread,this);
+		this->grab_thread_ = std::thread(&FFCDriver::StdGrabImgThread,this);
 	}
 	ROS_INFO("Start streaming\n");
 	return;
 }
 
-void FFC4PDriver::RosGrabImgThread(){
+void FFCDriver::RosGrabImgThread(){
 	while(this->ros_node_->ok() && this->is_run_){
 		GrabColorImg();
 		GrabMonoImg();
@@ -334,7 +334,7 @@ void FFC4PDriver::RosGrabImgThread(){
 	ROS_INFO("Stop grab tread\n");
 }
 
-void FFC4PDriver::StdGrabImgThread(){
+void FFCDriver::StdGrabImgThread(){
 	
 	while(this->is_run_){
 		GrabColorImg();
@@ -344,7 +344,7 @@ void FFC4PDriver::StdGrabImgThread(){
 	ROS_INFO("Stop grab tread\n");
 }
 
-void FFC4PDriver::GrabColorImg(){
+void FFCDriver::GrabColorImg(){
 	static cv_bridge::CvImage cv_img, assemble_cv_img;
 	static std_msgs::Int32 expose_time_msg;
 	static cv::Mat assemble_cv_mat = cv::Mat::zeros(720,5120,CV_8UC3);
@@ -417,7 +417,7 @@ void FFC4PDriver::GrabColorImg(){
 	}
 }
 
-void FFC4PDriver::GrabMonoImg(){
+void FFCDriver::GrabMonoImg(){
 	static cv_bridge::CvImage cv_img, assemble_cv_img;
 	static std_msgs::Int32 expose_time_msg;
 	static cv::Mat assemble_cv_mat = cv::Mat::zeros(720,5120,CV_8UC1);
@@ -491,7 +491,7 @@ void FFC4PDriver::GrabMonoImg(){
 }
 
 // TODO fps counter
-void FFC4PDriver::ShowColorImg(ImageNode & image_node, std::chrono::_V2::steady_clock::time_point& time_now){
+void FFCDriver::ShowColorImg(ImageNode & image_node, std::chrono::_V2::steady_clock::time_point& time_now){
 	if(image_node.image.empty()){
 		// ROS_ERROR("Image empty\n");
 		return;
@@ -515,7 +515,7 @@ void FFC4PDriver::ShowColorImg(ImageNode & image_node, std::chrono::_V2::steady_
 	return;
 }
 
-void FFC4PDriver::ShowMonoImg(ImageNode & image_node, std::chrono::_V2::steady_clock::time_point& time_now){
+void FFCDriver::ShowMonoImg(ImageNode & image_node, std::chrono::_V2::steady_clock::time_point& time_now){
 	if(image_node.image.empty()){
 		// ROS_ERROR("Image empty\n");
 		return;
