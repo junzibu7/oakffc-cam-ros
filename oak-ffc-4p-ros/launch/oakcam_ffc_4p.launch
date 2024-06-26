@@ -1,0 +1,71 @@
+<launch>
+    <arg name="color_show_img" default="true" />
+    <arg name="color_fps" default = "25" />
+    <arg name="color_resolution" default = "720"/>
+    <arg name="color_auto_expose" default = "false"/>
+    <arg name="color_expose_time_us" default = "40000"/>
+    <arg name="color_iso" default = "200"/>
+    <arg name="color_image_info" default= "true"/>
+    <arg name="color_auto_awb" default = "true"/>
+    <arg name="color_awb_value" default = "3200"/>
+    <arg name="color_ros_defined_freq" default = "true"/>
+    <arg name="color_calibration_mode" default = "true"/>
+    <arg name="color_compressed_assemble_image" default = "false"/>
+    <arg name="color_enable_upside_down" default = "true"/>
+
+    <arg name="mono_show_img" default="true" />
+    <arg name="mono_fps" default = "25" />
+    <arg name="mono_resolution" default = "720"/>
+    <arg name="mono_auto_expose" default = "false"/>
+    <arg name="mono_expose_time_us" default = "40000"/>
+    <arg name="mono_iso" default = "200"/>
+    <arg name="mono_image_info" default= "true"/>
+    <arg name="mono_auto_awb" default = "false"/>
+    <arg name="mono_awb_value" default = "3200"/>
+    <arg name="mono_ros_defined_freq" default = "true"/>
+    <arg name="mono_calibration_mode" default = "true"/>
+    <arg name="mono_compressed_assemble_image" default = "false"/>
+    <arg name="mono_enable_upside_down" default = "true"/>
+
+    <node name="oakcam_ffc_4p_ros" pkg="oakcam_ffc_4p_ros" type="oakcam_ffc_4p_ros_node" output="screen">
+        <param name="color_show_img" value="$(arg color_show_img)" />
+        <param name="color_fps" value="$(arg color_fps)" />
+        <param name="color_resolution" value = "$(arg color_resolution)"/>
+        <param name="color_auto_expose" value = "$(arg color_auto_expose)"/>
+        <param name="color_expose_time_us" value = "$(arg color_expose_time_us)"/>
+        <param name="color_iso" value = "$(arg color_iso)"/>
+        <param name="color_image_info" value = "$(arg color_image_info)"/>
+        <param name="color_auto_awb" value = "$(arg color_auto_awb)"/>
+        <param name="color_awb_value" value = "$(arg color_awb_value)"/>
+        <param name="color_ros_defined_freq" value = "$(arg color_ros_defined_freq)"/>
+        <param name="color_calibration_mode" value = "$(arg color_calibration_mode)"/>
+        <param name="color_compressed_assemble_image" value = "$(arg color_compressed_assemble_image)"/>
+        <param name="color_enable_upside_down" value ="$(arg color_enable_upside_down)"/>
+
+        <param name="mono_show_img" value="$(arg mono_show_img)" />
+        <param name="mono_fps" value="$(arg mono_fps)" />
+        <param name="mono_resolution" value = "$(arg mono_resolution)"/>
+        <param name="mono_auto_expose" value = "$(arg mono_auto_expose)"/>
+        <param name="mono_expose_time_us" value = "$(arg mono_expose_time_us)"/>
+        <param name="mono_iso" value = "$(arg mono_iso)"/>
+        <param name="mono_image_info" value = "$(arg mono_image_info)"/>
+        <param name="mono_auto_awb" value = "$(arg mono_auto_awb)"/>
+        <param name="mono_awb_value" value = "$(arg mono_awb_value)"/>
+        <param name="mono_ros_defined_freq" value = "$(arg mono_ros_defined_freq)"/>
+        <param name="mono_calibration_mode" value = "$(arg mono_calibration_mode)"/>
+        <param name="mono_compressed_assemble_image" value = "$(arg mono_compressed_assemble_image)"/>
+        <param name="mono_enable_upside_down" value ="$(arg mono_enable_upside_down)"/>
+        <!-- <param name="cap_device" value="$(arg cap_device)" />
+        <param name="width" value="$(arg width)" />
+        <param name="height" value="$(arg height)" />
+        <param name="fps" value="$(arg fps)" />
+        <param name="enable_color" value="$(arg enable_color)" />
+        <param name="publish_splited" value="$(arg publish_splited)" />
+        <param name="show" value="$(arg show)" />
+        <param name="raw8" value="true" />
+        <param name="is_sync" value="$(arg is_sync)" />
+        <param name="exposure" value="$(arg exposure)" />
+        <param name="gain" value="$(arg gain)" />
+        <param name="print_clearness" value="$(arg print_clearness)" /> -->
+    </node>
+</launch>
